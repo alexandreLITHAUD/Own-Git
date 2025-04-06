@@ -1,4 +1,4 @@
-package scutils
+package utils
 
 import (
 	"fmt"
@@ -6,13 +6,21 @@ import (
 	"path/filepath"
 )
 
-func CreateOwnFolder(initialBranchName string, configFile string) error {
-
+func IsOwnFolder() bool {
 	var path string = filepath.Join(".", ".own-git")
 
-	if _, err := os.Stat(path); os.IsExist(err) {
-		return nil
+	if _, err := os.Stat(path); os.IsNotExist(err) {
+		return false
 	}
+	return true
+}
+
+func CreateOwnFolder(initialBranchName string, configFile string) error {
+
+	if IsOwnFolder() {
+		return fmt.Errorf("error: .own-git folder already exists")
+	}
+	path := filepath.Join(".", ".own-git")
 
 	err := os.MkdirAll(path, os.ModePerm)
 
@@ -34,8 +42,8 @@ func CreateOwnFolder(initialBranchName string, configFile string) error {
 	var configBytes []byte = []byte("")
 
 	if configFile != "" {
-		if valid := IsConfFileValid(configFile); valid {
-			return fmt.Errorf("error parsing config file: %v", err)
+		if valid := IsConfFileValid(configFile); !valid {
+			return fmt.Errorf("error parsing config file")
 		}
 
 		configBytes, err = os.ReadFile(configFile)

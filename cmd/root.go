@@ -6,7 +6,7 @@ package cmd
 import (
 	"fmt"
 	"os"
-	scutils "own/sc-utils"
+	"own/internal/utils"
 
 	"github.com/spf13/cobra"
 )
@@ -31,13 +31,13 @@ It is not meant to be a replacement for git, but rather a learning tool.`,
 		if Config != "" {
 			fmt.Printf("Config file: %s\n", Config)
 			fmt.Print("Config file is not yet implemented\n")
-			if !scutils.IsConfFileValid(Config) {
+			if !utils.IsConfFileValid(Config) {
 				fmt.Printf("Config file is not valid\n")
 				os.Exit(1)
 			}
 
 			// TODO
-			argumentConfig, err := scutils.ParseConfigFile(Config)
+			argumentConfig, err := utils.ParseConfigFile(Config)
 
 			if err != nil {
 				fmt.Printf("Error parsing config file: %v\n", err)

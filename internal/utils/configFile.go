@@ -1,4 +1,4 @@
-package scutils
+package utils
 
 // TODO
 func IsConfFileValid(configPath string) bool {
