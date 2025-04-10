@@ -8,6 +8,10 @@ import (
 	"own/internal/types"
 )
 
+// TODO Find an efficent way to write only the needed entries instead of the whole index
+// TODO Add a function to remove an entry from the index without rewriting the whole index
+// TODO Boyer–Moore string-search algorithm ???
+
 func isIndex() bool {
 	if !IsOwnFolder() {
 		return false
@@ -60,4 +64,15 @@ func parseIndex() ([]types.IndexEntry, error) {
 	}
 
 	return entries, nil
+}
+
+func writeEntryToIndex(entries []types.IndexEntry) error {
+
+	currentIndex, err := parseIndex()
+	if err != nil {
+		return err
+	}
+
+	// TODO
+	return nil
 }
