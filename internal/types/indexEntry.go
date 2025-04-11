@@ -5,3 +5,11 @@ type IndexEntry struct {
 	Mode string `json:"mode"`
 	Hash string `json:"hash"`
 }
+
+func CreateIndexEntry(path string, mode string, hash string) IndexEntry {
+	return IndexEntry{
+		Path: path,
+		Mode: mode,
+		Hash: hash,
+	}
+}
