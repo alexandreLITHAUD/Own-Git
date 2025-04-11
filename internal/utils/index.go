@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 
@@ -153,4 +154,21 @@ func RemoveEntryFromIndex(path string) error {
 	}
 
 	return nil
+}
+
+func FilePathtoIndexEntry(path string) (types.IndexEntry, error) {
+
+	var mode string = "100644"
+
+	isexec, err := IsExecutable(path)
+	if isexec && err == nil {
+		mode = "100755"
+	}
+
+	hash, err := GetFileSHA1(path)
+	if err != nil {
+		return types.IndexEntry{}, fmt.Errorf("error getting file SHA1: %w", err)
+	}
+
+	return types.CreateIndexEntry(path, mode, hash), nil
 }
