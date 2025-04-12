@@ -49,4 +49,4 @@ jobs:
             - name: Create GitHub Release with binary
               uses: softprops/action-gh-release@v2
               with:
-                files: executables/own-git_*
+                files: executables/own-git*
