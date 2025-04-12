@@ -33,11 +33,19 @@ jobs:
             
                 # Count passing tests
                 TESTS_TOTAL=$(grep -c "<testcase" artifacts/test.xml)
-                TESTS_FAILED=$(grep -c "<failure" artifacts/test.xml)
+                TESTS_FAILED=$(grep -c "<failure" artifacts/test.xml || echo 0)
                 TESTS_PASSED=$((TESTS_TOTAL - TESTS_FAILED))
+                
+                # Calculate percentage safely
+                if [ $TESTS_TOTAL -eq 0 ]; then
+                    TESTS_PERCENTAGE=100
+                else
+                    TESTS_PERCENTAGE=$((TESTS_PASSED * 100 / TESTS_TOTAL))
+                fi
+                
                 echo "TESTS_TOTAL=$TESTS_TOTAL" >> $GITHUB_ENV
                 echo "TESTS_PASSED=$TESTS_PASSED" >> $GITHUB_ENV
-                echo "TESTS_PERCENTAGE=$(( (TESTS_PASSED * 100) / (TESTS_TOTAL > 0 ? TESTS_TOTAL : 1) ))" >> $GITHUB_ENV
+                echo "TESTS_PERCENTAGE=$TESTS_PERCENTAGE" >> $GITHUB_ENV
 
             - name: Create Tests Badge
               uses: schneegans/dynamic-badges-action@v1.6.0
