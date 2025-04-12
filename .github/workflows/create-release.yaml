@@ -34,8 +34,8 @@ jobs:
 
             - name: Create Own-Git executables
               run: |
-                OSS_TYPE=${{ vars.GO_DEPLOY_OSS }}
-                ARCH_TYPE=${{ vars.GO_DEPLOY_ARCHS }}
+                OSS_TYPE="${{ vars.GO_DEPLOY_OSS }}"
+                ARCH_TYPE="${{ vars.GO_DEPLOY_ARCHS }}"
 
                 # Create the executable for each architecture
                 for os in $OSS_TYPE; do
