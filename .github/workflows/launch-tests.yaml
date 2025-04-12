@@ -33,7 +33,7 @@ jobs:
             
             - name: Run tests with coverage
               run: |
-                go test -coverprofile=coverage.out ./tests/...
+                go test -coverprofile=coverage.out -coverpkg=./... ./tests/...
                 go tool cover -func=coverage.out > artifacts/coverage.txt
                 
                 # Add coverage to summary
