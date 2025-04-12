@@ -29,11 +29,13 @@ jobs:
 
             - name: Run tests
               run: |
+                set -e
                 go test -v 2>&1 ./tests/... | go-junit-report -set-exit-code > artifacts/test.xml
             
                 # Count passing tests
-                TESTS_TOTAL=$(grep -c "<testcase" artifacts/test.xml)
-                TESTS_FAILED=$(grep -c "<failure" artifacts/test.xml)
+                TESTS_TOTAL=$(grep -c "<testcase" artifacts/test.xml) || echo 0
+                TESTS_FAILED=$(grep -c "<failure" artifacts/test.xml) || echo 0 
+
                 TESTS_PASSED=$((TESTS_TOTAL - TESTS_FAILED))
                 
                 # Calculate percentage safely
