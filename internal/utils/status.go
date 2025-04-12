@@ -9,14 +9,13 @@ import (
 )
 
 const (
-	added      uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
-	removed                 // IF NOT IN INDEX BUT IN OBJECT
-	modified                // IF IN INDEX AND IN OBJECT WITH SAME NAME
-	renamed                 // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
-	untracked               // IF NOT IN INDEX AND NOT IN OBJECT
-	ignored                 // IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
-	conflicted              // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT CONTENT
-	unknown                 // ERROR CASE
+	added     uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
+	removed                // IF NOT IN INDEX BUT IN OBJECT
+	modified               // IF IN INDEX AND IN OBJECT WITH SAME NAME
+	renamed                // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
+	untracked              // IF NOT IN INDEX AND NOT IN OBJECT
+	ignored                // IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
+	unknown                // ERROR CASE
 )
 
 func GetFileStatusString(status uint8) string {
@@ -33,8 +32,6 @@ func GetFileStatusString(status uint8) string {
 		return "untracked"
 	case ignored:
 		return "ignored"
-	case conflicted:
-		return "conflicted"
 	default:
 		return "unknown"
 	}
@@ -77,9 +74,12 @@ func GetObjectFile(hash string) (types.WorktreeEntry, error) {
 // - renamed:    IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
 // - untracked:  IF NOT IN INDEX AND NOT IN OBJECT
 // - ignored:    IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
-// - conflicted: IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT CONTENT
 // - unknown:    ERROR CASE
+// TODO DEAL WITH IGNORED AND CONFLICTED IN THE FUTURE
 func GetFileStatus(path string) (uint8, error) {
+
+	var isInIndex bool = false
+	var isInObject bool = true
 
 	if !IsIndex() {
 		return unknown, fmt.Errorf("index does not exist")
@@ -95,7 +95,33 @@ func GetFileStatus(path string) (uint8, error) {
 		return unknown, err
 	}
 
-	objectFile := GetObjectFile(fileEntry.Hash)
+	for _, entry := range currentIndexEntries {
+		if entry.Hash == fileEntry.Hash && entry.Path == fileEntry.Path {
+			isInIndex = true
+			break
+		}
+	}
 
+	objectFile, err := GetObjectFile(fileEntry.Hash)
+	if err != nil {
+		isInObject = false
+	}
+
+	if isInIndex && isInObject {
+		if fileEntry.Path != objectFile.Path {
+			return renamed, nil
+		} else {
+			return modified, nil
+		}
+	}
+	if isInIndex && !isInObject {
+		return added, nil
+	}
+	if !isInIndex && isInObject {
+		return removed, nil
+	}
+	if !isInIndex && !isInObject {
+		return untracked, nil
+	}
 	return unknown, nil
 }

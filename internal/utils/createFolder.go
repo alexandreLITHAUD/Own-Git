@@ -3,11 +3,12 @@ package utils
 import (
 	"fmt"
 	"os"
+	"own/internal/paths"
 	"path/filepath"
 )
 
 func IsOwnFolder() bool {
-	var path string = filepath.Join(".", ".own-git")
+	var path string = paths.GetOwnGitFolderPath()
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
@@ -20,7 +21,7 @@ func CreateOwnFolder(initialBranchName string, configFile string) error {
 	if IsOwnFolder() {
 		return fmt.Errorf("error: .own-git folder already exists")
 	}
-	path := filepath.Join(".", ".own-git")
+	path := paths.GetOwnGitFolderPath()
 
 	err := os.MkdirAll(path, os.ModePerm)
 

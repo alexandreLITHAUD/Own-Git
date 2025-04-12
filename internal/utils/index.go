@@ -4,23 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"path/filepath"
 
+	"own/internal/paths"
 	"own/internal/types"
 )
 
 // TODO Find an efficent way to write only the needed entries instead of the whole index
 // TODO Add a function to remove an entry from the index without rewriting the whole index
 // TODO Boyer–Moore string-search algorithm ???
-
-// GetIndexFilePath returns the path of the index file. This could be improve to check
-// if the .own-git folder exists in parents.
-//
-// The path is the path of the current working directory plus the name of the
-// .own-git folder plus the name of the index file.
-func GetIndexFilePath() string {
-	return filepath.Join(".", ".own-git", "index")
-}
 
 // IsIndex checks if the index exists.
 //
@@ -32,7 +23,7 @@ func IsIndex() bool {
 		return false
 	}
 
-	path := GetIndexFilePath()
+	path := paths.GetIndexFilePath()
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -49,7 +40,7 @@ func IsIndexEmpty() (bool, error) {
 	if !IsIndex() {
 		return true, nil
 	}
-	path := GetIndexFilePath()
+	path := paths.GetIndexFilePath()
 	fileinfo, err := os.Stat(path)
 	if err != nil {
 		return false, err
@@ -80,7 +71,7 @@ func ParseIndex() ([]types.IndexEntry, error) {
 		return make([]types.IndexEntry, 0), nil
 	}
 
-	path := GetIndexFilePath()
+	path := paths.GetIndexFilePath()
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -139,7 +130,7 @@ func WriteEntryToIndex(entries []types.IndexEntry) error {
 		return err
 	}
 
-	path := GetIndexFilePath()
+	path := paths.GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
 		return err
@@ -174,7 +165,7 @@ func RemoveEntryFromIndex(path string) error {
 		return err
 	}
 
-	path = GetIndexFilePath()
+	path = paths.GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
 		return err
