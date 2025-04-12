@@ -8,6 +8,8 @@ on:
 jobs:
     build-and-release:
         runs-on: ubuntu-latest
+        permissions:
+            contents: write  # This allows creating releases
         steps:
             
             - name: Checkout
