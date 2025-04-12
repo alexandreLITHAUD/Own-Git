@@ -31,16 +31,48 @@ jobs:
               run: |
                 go test -v 2>&1 ./tests/... | go-junit-report -set-exit-code > artifacts/test.xml
             
+                # Count passing tests
+                TESTS_TOTAL=$(grep -c "<testcase" artifacts/test.xml)
+                TESTS_FAILED=$(grep -c "<failure" artifacts/test.xml)
+                TESTS_PASSED=$((TESTS_TOTAL - TESTS_FAILED))
+                echo "TESTS_TOTAL=$TESTS_TOTAL" >> $GITHUB_ENV
+                echo "TESTS_PASSED=$TESTS_PASSED" >> $GITHUB_ENV
+                echo "TESTS_PERCENTAGE=$(( (TESTS_PASSED * 100) / (TESTS_TOTAL > 0 ? TESTS_TOTAL : 1) ))" >> $GITHUB_ENV
+
+            - name: Create Tests Badge
+              uses: schneegans/dynamic-badges-action@v1.6.0
+              with:
+                auth: ${{ secrets.GIST_SECRET }}
+                gistID: 3aff3ab94739bdcdd6a9640f0150eeda
+                filename: tests.json
+                label: tests
+                message: ${{ env.TESTS_PASSED }}/${{ env.TESTS_TOTAL }} (${{ env.TESTS_PERCENTAGE }}%)
+                color: ${{ env.TESTS_PERCENTAGE == '100' && 'brightgreen' || env.TESTS_PERCENTAGE >= '90' && 'green' || env.TESTS_PERCENTAGE >= '80' && 'yellowgreen' || env.TESTS_PERCENTAGE >= '70' && 'yellow' || env.TESTS_PERCENTAGE >= '60' && 'orange' || 'red' }}
+
             - name: Run tests with coverage
               run: |
                 go test -coverprofile=coverage.out -coverpkg=./... ./tests/...
                 go tool cover -func=coverage.out > artifacts/coverage.txt
+
+                # Extract coverage percentage for badge
+                COVERAGE_PCT=$(go tool cover -func=coverage.out | grep total | awk '{print $3}')
+                echo "COVERAGE=$COVERAGE_PCT" >> $GITHUB_ENV
                 
                 # Add coverage to summary
                 echo "## Test Coverage" >> $GITHUB_STEP_SUMMARY
                 echo '```' >> $GITHUB_STEP_SUMMARY
                 cat artifacts/coverage.txt >> $GITHUB_STEP_SUMMARY
                 echo '```' >> $GITHUB_STEP_SUMMARY
+
+            - name: Create Coverage Badge
+              uses: schneegans/dynamic-badges-action@v1.6.0
+              with:
+                auth: ${{ secrets.GIST_SECRET }}
+                gistID: 3aff3ab94739bdcdd6a9640f0150eeda
+                filename: coverage.json
+                label: coverage
+                message: ${{ env.COVERAGE }}
+                color: ${{ env.COVERAGE >= '80%' && 'green' || env.COVERAGE >= '60%' && 'yellow' || 'red' }}
               
             - name: Run benchmarks
               run: |
