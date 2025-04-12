@@ -55,7 +55,7 @@ jobs:
                 auth: ${{ secrets.GIST_SECRET }}
                 gistID: 3aff3ab94739bdcdd6a9640f0150eeda
                 filename: tests.json
-                label: tests
+                label: Unit-Test
                 message: ${{ env.TESTS_PASSED }}/${{ env.TESTS_TOTAL }} (${{ env.TESTS_PERCENTAGE }}%)
                 color: ${{ env.TESTS_PERCENTAGE == '100' && 'brightgreen' || env.TESTS_PERCENTAGE >= '90' && 'green' || env.TESTS_PERCENTAGE >= '80' && 'yellowgreen' || env.TESTS_PERCENTAGE >= '70' && 'yellow' || env.TESTS_PERCENTAGE >= '60' && 'orange' || 'red' }}
 
@@ -80,7 +80,7 @@ jobs:
                 auth: ${{ secrets.GIST_SECRET }}
                 gistID: 3aff3ab94739bdcdd6a9640f0150eeda
                 filename: coverage.json
-                label: coverage
+                label: Coverage
                 message: ${{ env.COVERAGE }}
                 color: ${{ env.COVERAGE >= '80%' && 'green' || env.COVERAGE >= '60%' && 'yellow' || 'red' }}
               

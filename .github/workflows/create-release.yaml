@@ -1,0 +1,50 @@
+name: Create Release for Own-Git for pushed tag
+
+on:
+    push:
+        tags:
+            - 'v*'
+
+jobs:
+    build-and-release:
+        runs-on: ubuntu-latest
+        steps:
+            
+            - name: Checkout
+              uses: actions/checkout@v4
+
+            - name: Set up Go
+              uses: actions/setup-go@v5
+              with:
+                go-version: '>=1.24'
+
+            - name: Install dependencies
+              run: go mod tidy
+
+            - name: Create executable Folder
+              run: mkdir -p executables
+
+            # Parse the version from the tag
+            - name: Parse Version
+              run: |
+                # Extract version from the TAG
+                echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+
+            - name: Create Own-Git executables
+              run: |
+                OSS_TYPE=${{ vars.GO_DEPLOY_OSS }}
+                ARCH_TYPE=${{ vars.GO_DEPLOY_ARCHS }}
+
+                # Create the executable for each architecture
+                for os in $ARCH_TYPE; do
+                    for arch in $OSS_TYPE; do
+                        echo "Building for OS: $os, ARCH: $arch"
+                        GOOS=$os GOARCH=$arch go build -o executables/own-git-${{ env.VERSION }}-$os-$arch .
+                    done
+                done
+                
+            # Upload the .deb package to a new newly created release
+            - name: Create GitHub Release with binary
+              uses: softprops/action-gh-release@v2
+              with:
+                files: executables/own-git_*
