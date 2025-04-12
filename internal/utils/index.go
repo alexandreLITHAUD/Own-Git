@@ -13,12 +13,16 @@ import (
 // TODO Add a function to remove an entry from the index without rewriting the whole index
 // TODO Boyer–Moore string-search algorithm ???
 
+func GetIndexFilePath() string {
+	return filepath.Join(".", ".own-git", "index")
+}
+
 func IsIndex() bool {
 	if !IsOwnFolder() {
 		return false
 	}
 
-	path := filepath.Join(".", ".own-git", "index")
+	path := GetIndexFilePath()
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
 	}
@@ -29,7 +33,7 @@ func IsIndexEmpty() (bool, error) {
 	if !IsIndex() {
 		return true, nil
 	}
-	path := filepath.Join(".", ".own-git", "index")
+	path := GetIndexFilePath()
 	fileinfo, err := os.Stat(path)
 	if err != nil {
 		return false, err
@@ -52,7 +56,7 @@ func ParseIndex() ([]types.IndexEntry, error) {
 		return make([]types.IndexEntry, 0), nil
 	}
 
-	path := filepath.Join(".", ".own-git", "index")
+	path := GetIndexFilePath()
 	file, err := os.ReadFile(path)
 	if err != nil {
 		return nil, err
@@ -69,40 +73,21 @@ func ParseIndex() ([]types.IndexEntry, error) {
 
 func MergeIndexEntries(currentIndex []types.IndexEntry, newEntries []types.IndexEntry) []types.IndexEntry {
 	// TODO Add a function to remove an entry from the index without rewriting the whole index
-	// TODO find a better way to do this
 
-	mergedIndex := make([]types.IndexEntry, 0)
+	indexMap := make(map[string]types.IndexEntry)
 
 	for _, entry := range currentIndex {
-		// Check if the entry already exists in the new entries
-		exist := false
-		for _, newEntry := range newEntries {
-			if entry.Path == newEntry.Path {
-				mergedIndex = append(mergedIndex, newEntry)
-				exist = true
-				break
-			}
-		}
-		if !exist {
-			mergedIndex = append(mergedIndex, entry)
-		}
+		indexMap[entry.Path] = entry
+	}
+	for _, entry := range newEntries {
+		indexMap[entry.Path] = entry // new entries override old
 	}
 
-	// Add new entries that are not in the current index
-	for _, newEntry := range newEntries {
-		exist := false
-		for _, entry := range currentIndex {
-			if newEntry.Path == entry.Path {
-				exist = true
-				break
-			}
-		}
-		if !exist {
-			mergedIndex = append(mergedIndex, newEntry)
-		}
+	merged := make([]types.IndexEntry, 0, len(indexMap))
+	for _, entry := range indexMap {
+		merged = append(merged, entry)
 	}
-
-	return mergedIndex
+	return merged
 }
 
 func WriteEntryToIndex(entries []types.IndexEntry) error {
@@ -116,10 +101,10 @@ func WriteEntryToIndex(entries []types.IndexEntry) error {
 
 	jsonData, err := json.Marshal(mergedIndexEntries)
 	if err != nil {
-		return nil
+		return err
 	}
 
-	path := filepath.Join(".", ".own-git", "index")
+	path := GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
 		return err
@@ -144,10 +129,10 @@ func RemoveEntryFromIndex(path string) error {
 
 	jsonData, err := json.Marshal(currentIndex)
 	if err != nil {
-		return nil
+		return err
 	}
 
-	path = filepath.Join(".", ".own-git", "index")
+	path = GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
 		return err
