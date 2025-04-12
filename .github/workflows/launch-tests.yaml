@@ -29,11 +29,11 @@ jobs:
 
             - name: Run tests
               run: |
-                go test -v 2>&1 ./... | go-junit-report -set-exit-code > artifacts/test.xml
+                go test -v 2>&1 ./tests/... | go-junit-report -set-exit-code > artifacts/test.xml
             
             - name: Run Benchmark Test
               run: |
-                go test -v -bench . -count 5 2>&1 | go-junit-report -out artifacts/bench.xml
+                go test ./tests/... -v -bench=. ./tests/... -count 5 2>&1 | go-junit-report -out artifacts/bench.xml
 
             - name: Show Unit Test Report
               uses: dorny/test-reporter@v2
