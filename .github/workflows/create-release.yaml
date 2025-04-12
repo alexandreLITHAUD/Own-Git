@@ -36,8 +36,8 @@ jobs:
                 ARCH_TYPE=${{ vars.GO_DEPLOY_ARCHS }}
 
                 # Create the executable for each architecture
-                for os in $ARCH_TYPE; do
-                    for arch in $OSS_TYPE; do
+                for os in $OSS_TYPE; do
+                    for arch in $ARCH_TYPE; do
                         echo "Building for OS: $os, ARCH: $arch"
                         GOOS=$os GOARCH=$arch go build -o executables/own-git-${{ env.VERSION }}-$os-$arch .
                     done
