@@ -86,7 +86,7 @@ jobs:
               
             - name: Run benchmarks
               run: |
-                go test -bench=. -benchmem ./tests/... > artifacts/benchmarks.txt
+                go test -bench=. -benchmem -run=^$ ./tests/... > artifacts/benchmarks.txt
                 
                 # Add benchmarks to summary
                 echo "## Benchmark Results" >> $GITHUB_STEP_SUMMARY
