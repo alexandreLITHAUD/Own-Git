@@ -2,6 +2,7 @@ package tests
 
 import (
 	"os"
+	"sort"
 	"testing"
 
 	"own/internal/paths"
@@ -145,12 +146,19 @@ func TestMergeIndexEntries(t *testing.T) {
 		t.Fatalf("Expected %d merged entries, got %d", len(expectedMerged), len(result))
 	}
 
-	for i, entry := range result {
-		if entry.Path != expectedMerged[i].Path || entry.Mode != expectedMerged[i].Mode || entry.Hash != expectedMerged[i].Hash {
-			t.Errorf("Unexpected merged entry at index %d: %+v, expected: %+v", i, entry, expectedMerged[i])
+	sort.Slice(result, func(i, j int) bool {
+		return result[i].Path < result[j].Path
+	})
+
+	sort.Slice(expectedMerged, func(i, j int) bool {
+		return expectedMerged[i].Path < expectedMerged[j].Path
+	})
+
+	for i := range result {
+		if result[i] != expectedMerged[i] {
+			t.Errorf("Expected merged entry %d to be %+v, got %+v", i, expectedMerged[i], result[i])
 		}
 	}
-
 }
 
 func TestWriteEntryToIndex(t *testing.T) {
