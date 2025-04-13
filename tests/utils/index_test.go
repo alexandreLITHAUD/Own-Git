@@ -98,6 +98,11 @@ func TestParseIndex(t *testing.T) {
 		t.Fatalf("ParseIndex failed: %v", err)
 	}
 
+	// Sort entries for comparison
+	sort.Slice(entries, func(i, j int) bool {
+		return entries[i].Path < entries[j].Path
+	})
+
 	if len(entries) != 2 {
 		t.Errorf("Expected 2 entries, got %d", len(entries))
 	}
@@ -189,6 +194,10 @@ func TestWriteEntryToIndex(t *testing.T) {
 	if err != nil {
 		t.Fatalf("ParseIndex failed: %v", err)
 	}
+
+	sort.Slice(parsedEntries, func(i, j int) bool {
+		return parsedEntries[i].Path < parsedEntries[j].Path
+	})
 
 	if len(parsedEntries) != 2 {
 		t.Errorf("Expected 2 entries, got %d", len(parsedEntries))
