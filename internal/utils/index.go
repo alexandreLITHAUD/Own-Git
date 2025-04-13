@@ -130,6 +130,10 @@ func WriteEntryToIndex(entries []types.IndexEntry) error {
 		return err
 	}
 
+	if string(jsonData) == "[]" {
+		return nil
+	}
+
 	path := paths.GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
@@ -163,6 +167,10 @@ func RemoveEntryFromIndex(path string) error {
 	jsonData, err := json.Marshal(currentIndex)
 	if err != nil {
 		return err
+	}
+
+	if string(jsonData) == "[]" {
+		return nil
 	}
 
 	path = paths.GetIndexFilePath()

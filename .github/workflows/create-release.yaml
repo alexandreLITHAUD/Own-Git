@@ -41,7 +41,11 @@ jobs:
                 for os in $OSS_TYPE; do
                     for arch in $ARCH_TYPE; do
                         echo "Building for OS: $os, ARCH: $arch"
-                        GOOS=$os GOARCH=$arch go build -o executables/own-git-${{ env.VERSION }}-$os-$arch .
+                        GOOS=$os GOARCH=$arch go build \
+                          -ldflags="-s -w -X main.Version=${{ env.VERSION }}" \
+                          -trimpath \
+                          -tags=netgo,osusergo \
+                          -o executables/own-git-${{ env.VERSION }}-$os-$arch .
                     done
                 done
                 

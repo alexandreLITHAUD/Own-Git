@@ -11,6 +11,8 @@ func SetBasePath(path string) {
 	basePathOverride = path
 }
 
+// GetOwnGitFolderPath returns the path of the .own-git folder. If SetBasePath has been used, the
+// base path is the one set by SetBasePath; otherwise, it is the current working directory.
 func GetOwnGitFolderPath() string {
 	if basePathOverride != "" {
 		return filepath.Join(basePathOverride, ".own-git")
