@@ -4,33 +4,33 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+	"own/internal/paths"
 	"own/internal/types"
-	"path/filepath"
 )
 
 const (
-	added     uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
-	removed                // IF NOT IN INDEX BUT IN OBJECT
-	modified               // IF IN INDEX AND IN OBJECT WITH SAME NAME
-	renamed                // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
-	untracked              // IF NOT IN INDEX AND NOT IN OBJECT
-	ignored                // IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
-	unknown                // ERROR CASE
+	Added     uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
+	Removed                // IF NOT IN INDEX BUT IN OBJECT
+	Modified               // IF IN INDEX AND IN OBJECT WITH SAME NAME
+	Renamed                // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
+	Untracked              // IF NOT IN INDEX AND NOT IN OBJECT
+	Ignored                // IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
+	Unknown                // ERROR CASE
 )
 
 func GetFileStatusString(status uint8) string {
 	switch status {
-	case added:
+	case Added:
 		return "added"
-	case removed:
+	case Removed:
 		return "removed"
-	case modified:
+	case Modified:
 		return "modified"
-	case renamed:
+	case Renamed:
 		return "renamed"
-	case untracked:
+	case Untracked:
 		return "untracked"
-	case ignored:
+	case Ignored:
 		return "ignored"
 	default:
 		return "unknown"
@@ -39,7 +39,7 @@ func GetFileStatusString(status uint8) string {
 
 func GetObjectFile(hash string) (types.WorktreeEntry, error) {
 
-	path := filepath.Join(".", ".own-git", "objects", hash[:2], hash[2:])
+	path := paths.GetObjectFilePath(hash)
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return types.WorktreeEntry{}, err
 	}
@@ -82,17 +82,17 @@ func GetFileStatus(path string) (uint8, error) {
 	var isInObject bool = true
 
 	if !IsIndex() {
-		return unknown, fmt.Errorf("index does not exist")
+		return Unknown, fmt.Errorf("index does not exist")
 	}
 
 	currentIndexEntries, err := ParseIndex()
 	if err != nil {
-		return unknown, err
+		return Unknown, err
 	}
 
 	fileEntry, err := FilePathtoIndexEntry(path)
 	if err != nil {
-		return unknown, err
+		return Unknown, err
 	}
 
 	for _, entry := range currentIndexEntries {
@@ -109,19 +109,19 @@ func GetFileStatus(path string) (uint8, error) {
 
 	if isInIndex && isInObject {
 		if fileEntry.Path != objectFile.Path {
-			return renamed, nil
+			return Renamed, nil
 		} else {
-			return modified, nil
+			return Modified, nil
 		}
 	}
 	if isInIndex && !isInObject {
-		return added, nil
+		return Added, nil
 	}
 	if !isInIndex && isInObject {
-		return removed, nil
+		return Removed, nil
 	}
 	if !isInIndex && !isInObject {
-		return untracked, nil
+		return Untracked, nil
 	}
-	return unknown, nil
+	return Unknown, nil
 }

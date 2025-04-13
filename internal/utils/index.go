@@ -169,10 +169,6 @@ func RemoveEntryFromIndex(path string) error {
 		return err
 	}
 
-	if string(jsonData) == "[]" {
-		return nil
-	}
-
 	path = paths.GetIndexFilePath()
 	err = os.WriteFile(path, jsonData, 0644)
 	if err != nil {
