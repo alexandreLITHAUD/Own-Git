@@ -45,7 +45,10 @@ jobs:
                           -ldflags="-s -w -X own/cmd.Version=${{ env.VERSION }}" \
                           -trimpath \
                           -tags=netgo,osusergo \
-                          -o executables/own-git-${{ env.VERSION }}-$os-$arch .
+                          -o own-git-${{ env.VERSION }}-$os-$arch .
+                        chmod +x own-git-${{ env.VERSION }}-$os-$arch
+                        # Create a .tar.gz archive
+                        tar -czf executables/own-git-${{ env.VERSION }}-$os-$arch.tar.gz own-git-${{ env.VERSION }}-$os-$arch
                     done
                 done
                 
