@@ -104,10 +104,14 @@ jobs:
 
 
             - name: Run Security Checks
-              continue-on-error: true
               uses: securego/gosec@master
               with:
-                args: ./...
+                args: '-no-fail -fmt sarif -out results.sarif ./...'
+
+            - name: Upload Security SARIF file
+              uses: github/codeql-action/upload-sarif@v2
+              with:
+                sarif_file: results.sarif
 
             - name: Show Unit Test Report
               uses: dorny/test-reporter@v2
