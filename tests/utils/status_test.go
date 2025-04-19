@@ -13,22 +13,26 @@ import (
 
 func TestGetFileStatusString(t *testing.T) {
 	tests := []struct {
-		status   uint8
-		expected string
+		status        uint8
+		expected      string
+		colorExpected string
 	}{
-		{utils.Added, "added"},
-		{utils.Removed, "removed"},
-		{utils.Modified, "modified"},
-		{utils.Renamed, "renamed"},
-		{utils.Untracked, "untracked"},
-		{utils.Ignored, "ignored"},
-		{utils.Unknown, "unknown"},
+		{utils.Added, "added", utils.Green},
+		{utils.Removed, "removed", utils.Cyan},
+		{utils.Modified, "modified", utils.Yellow},
+		{utils.Renamed, "renamed", utils.Blue},
+		{utils.Untracked, "untracked", utils.Red},
+		{utils.Ignored, "ignored", utils.Purple},
+		{utils.Unknown, "unknown", utils.NoColor},
 	}
 
 	for _, test := range tests {
-		result := utils.GetFileStatusString(test.status)
+		result, color := utils.GetFileStatusString(test.status)
 		if result != test.expected {
 			t.Errorf("Expected %s for status %v, got %s", test.expected, test.status, result)
+		}
+		if color != test.colorExpected {
+			t.Errorf("Expected color %s for status %v, got %s", test.colorExpected, test.status, color)
 		}
 	}
 }

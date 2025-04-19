@@ -13,14 +13,13 @@ import (
 
 // initCmd represents the init command
 var initCmd = &cobra.Command{
-	Use:   "init",
-	Short: "Initialize own-git folder",
+	Use:     "init",
+	Short:   "Initialize own-git folder",
+	Example: `own init --initial-branch ILoveSourceControl`,
+	Aliases: []string{"i"},
 	Long: `Initialize own-git folder. And create multiples folders for objects and refs.
 You can specify the name of the initial branch, using the --initial-branch flag.
-The default value is "main".
-	
-Example :
-  own init --initial-branch ILoveSourceControl`,
+The default value is "main".`,
 	Run: func(cmd *cobra.Command, args []string) {
 		branch, _ := cmd.Flags().GetString("initial-branch")
 		if Verbose {

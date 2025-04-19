@@ -10,6 +10,16 @@ import (
 )
 
 const (
+	Red     string = "\033[31m"
+	Green   string = "\033[32m"
+	Yellow  string = "\033[33m"
+	Blue    string = "\033[34m"
+	Purple  string = "\033[35m"
+	Cyan    string = "\033[36m"
+	NoColor string = "\033[0m"
+)
+
+const (
 	Added     uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
 	Removed                // IF NOT IN INDEX BUT IN OBJECT
 	Modified               // IF IN INDEX AND IN OBJECT WITH SAME NAME
@@ -19,22 +29,22 @@ const (
 	Unknown                // ERROR CASE
 )
 
-func GetFileStatusString(status uint8) string {
+func GetFileStatusString(status uint8) (string, string) {
 	switch status {
 	case Added:
-		return "added"
+		return "added", Green
 	case Removed:
-		return "removed"
+		return "removed", Cyan
 	case Modified:
-		return "modified"
+		return "modified", Yellow
 	case Renamed:
-		return "renamed"
+		return "renamed", Blue
 	case Untracked:
-		return "untracked"
+		return "untracked", Red
 	case Ignored:
-		return "ignored"
+		return "ignored", Purple
 	default:
-		return "unknown"
+		return "unknown", NoColor
 	}
 }
 

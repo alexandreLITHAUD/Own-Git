@@ -22,13 +22,13 @@ var commitBranch string
 
 // commitCmd represents the commit command
 var commitCmd = &cobra.Command{
-	Use:   "commit",
-	Short: "Commit changes to the repository",
+	Use:     "commit",
+	Short:   "Commit changes to the repository",
+	Example: `own commit --message "My first commit" --author "John Doe" --date "2025-01-01T00:00:00Z"`,
+	Aliases: []string{"cm"},
 	Long: `Commit changes to the repository. This command will create a new commit with the changes made to the repository.
 You can specify the commit message using the --message flag.
-The default value is "Commit".
-Example :
-  own commit --message "My first commit" --author "John Doe" --date "2025-01-01T00:00:00Z"`,
+The default value is "Commit".`,
 	Run: func(cmd *cobra.Command, args []string) {
 
 		if !utils.IsOwnFolder() {
