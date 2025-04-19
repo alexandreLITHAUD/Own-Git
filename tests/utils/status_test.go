@@ -13,22 +13,26 @@ import (
 
 func TestGetFileStatusString(t *testing.T) {
 	tests := []struct {
-		status   uint8
-		expected string
+		status        types.FileStatus
+		expected      string
+		colorExpected types.Color
 	}{
-		{utils.Added, "added"},
-		{utils.Removed, "removed"},
-		{utils.Modified, "modified"},
-		{utils.Renamed, "renamed"},
-		{utils.Untracked, "untracked"},
-		{utils.Ignored, "ignored"},
-		{utils.Unknown, "unknown"},
+		{types.Added, "added", types.Green},
+		{types.Removed, "removed", types.Cyan},
+		{types.Modified, "modified", types.Yellow},
+		{types.Renamed, "renamed", types.Blue},
+		{types.Untracked, "untracked", types.Red},
+		{types.Ignored, "ignored", types.Purple},
+		{types.Unknown, "unknown", types.NoColor},
 	}
 
 	for _, test := range tests {
-		result := utils.GetFileStatusString(test.status)
+		result, color := utils.GetFileStatusString(test.status)
 		if result != test.expected {
 			t.Errorf("Expected %s for status %v, got %s", test.expected, test.status, result)
+		}
+		if color != test.colorExpected {
+			t.Errorf("Expected color %s for status %v, got %s", test.colorExpected, test.status, color)
 		}
 	}
 }
@@ -107,13 +111,13 @@ func TestGetFileStatus(t *testing.T) {
 	}
 
 	// TEST FILE NOT EXISTING TO TEST UNKNOWN
-	var result uint8
+	var result types.FileStatusStruct
 	result, err = utils.GetFileStatus("test.txt")
 	if err == nil {
 		t.Fatalf("Expected error")
 	}
-	if result != utils.Unknown {
-		t.Errorf("Expected status %v, got %v", utils.Unknown, result)
+	if result.Status != types.Unknown {
+		t.Errorf("Expected status %v, got %v", types.Unknown, result)
 	}
 
 	// CREATE FILE TO TEST UNTRACKED
@@ -126,8 +130,8 @@ func TestGetFileStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if result != utils.Untracked {
-		t.Errorf("Expected status %v, got %v", utils.Untracked, result)
+	if result.Status != types.Untracked {
+		t.Errorf("Expected status %v, got %v", types.Untracked, result)
 	}
 
 	// CREATE INDEX TO TEST ADDED
@@ -146,8 +150,8 @@ func TestGetFileStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if result != utils.Added {
-		t.Errorf("Expected status %v, got %v", utils.Added, result)
+	if result.Status != types.Added {
+		t.Errorf("Expected status %v, got %v", types.Added, result)
 	}
 
 	// REMOVE FILE TO ENTRY
@@ -178,8 +182,8 @@ func TestGetFileStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if result != utils.Removed {
-		t.Errorf("Expected status %v, got %v", utils.Removed, result)
+	if result.Status != types.Removed {
+		t.Errorf("Expected status %v, got %v", types.Removed, result)
 	}
 
 	// ADD FILE TO INDEX AGAIN TO TEST MODIFIED
@@ -191,8 +195,8 @@ func TestGetFileStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if result != utils.Modified {
-		t.Errorf("Expected status %v, got %v", utils.Modified, result)
+	if result.Status != types.Modified {
+		t.Errorf("Expected status %v, got %v", types.Modified, result)
 	}
 
 	// RENAME FILE TO TEST RENAMED
@@ -219,7 +223,7 @@ func TestGetFileStatus(t *testing.T) {
 	if err != nil {
 		t.Fatalf("Expected no error, got %v", err)
 	}
-	if result != utils.Renamed {
-		t.Errorf("Expected status %v, got %v", utils.Renamed, result)
+	if result.Status != types.Renamed {
+		t.Errorf("Expected status %v, got %v", types.Renamed, result)
 	}
 }
