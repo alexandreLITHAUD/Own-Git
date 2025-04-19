@@ -9,42 +9,22 @@ import (
 	"github.com/alexandreLITHAUD/Own-Git/internal/types"
 )
 
-const (
-	Red     string = "\033[31m"
-	Green   string = "\033[32m"
-	Yellow  string = "\033[33m"
-	Blue    string = "\033[34m"
-	Purple  string = "\033[35m"
-	Cyan    string = "\033[36m"
-	NoColor string = "\033[0m"
-)
-
-const (
-	Added     uint8 = iota // IF IN INDEX BUT NOT IN OBJECT
-	Removed                // IF NOT IN INDEX BUT IN OBJECT
-	Modified               // IF IN INDEX AND IN OBJECT WITH SAME NAME
-	Renamed                // IF IN INDEX AND IN OBJECT BUT WITH DIFFERENT NAME
-	Untracked              // IF NOT IN INDEX AND NOT IN OBJECT
-	Ignored                // IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
-	Unknown                // ERROR CASE
-)
-
-func GetFileStatusString(status uint8) (string, string) {
+func GetFileStatusString(status types.FileStatus) (string, types.Color) {
 	switch status {
-	case Added:
-		return "added", Green
-	case Removed:
-		return "removed", Cyan
-	case Modified:
-		return "modified", Yellow
-	case Renamed:
-		return "renamed", Blue
-	case Untracked:
-		return "untracked", Red
-	case Ignored:
-		return "ignored", Purple
+	case types.Added:
+		return "added", types.Green
+	case types.Removed:
+		return "removed", types.Cyan
+	case types.Modified:
+		return "modified", types.Yellow
+	case types.Renamed:
+		return "renamed", types.Blue
+	case types.Untracked:
+		return "untracked", types.Red
+	case types.Ignored:
+		return "ignored", types.Purple
 	default:
-		return "unknown", NoColor
+		return "unknown", types.NoColor
 	}
 }
 
@@ -87,23 +67,27 @@ func GetObjectFile(hash string) (types.WorktreeEntry, error) {
 // - ignored:    IF NOT IN INDEX AND NOT IN OBJECT AND IGNORED
 // - unknown:    ERROR CASE
 // TODO DEAL WITH IGNORED AND CONFLICTED IN THE FUTURE
-func GetFileStatus(path string) (uint8, error) {
+func GetFileStatus(path string) (types.FileStatusStruct, error) {
 
 	var isInIndex bool = false
 	var isInObject bool = true
+	var fileStatusStruct types.FileStatusStruct = types.FileStatusStruct{
+		Path:   path,
+		Status: types.Unknown,
+	}
 
 	if !IsIndex() {
-		return Unknown, fmt.Errorf("index does not exist")
+		return fileStatusStruct, fmt.Errorf("index does not exist")
 	}
 
 	currentIndexEntries, err := ParseIndex()
 	if err != nil {
-		return Unknown, err
+		return fileStatusStruct, err
 	}
 
 	fileEntry, err := FilePathtoIndexEntry(path)
 	if err != nil {
-		return Unknown, err
+		return fileStatusStruct, err
 	}
 
 	for _, entry := range currentIndexEntries {
@@ -120,19 +104,24 @@ func GetFileStatus(path string) (uint8, error) {
 
 	if isInIndex && isInObject {
 		if fileEntry.Path != objectFile.Path {
-			return Renamed, nil
+			fileStatusStruct.Status = types.Renamed
+			return fileStatusStruct, nil
 		} else {
-			return Modified, nil
+			fileStatusStruct.Status = types.Modified
+			return fileStatusStruct, nil
 		}
 	}
 	if isInIndex && !isInObject {
-		return Added, nil
+		fileStatusStruct.Status = types.Added
+		return fileStatusStruct, nil
 	}
 	if !isInIndex && isInObject {
-		return Removed, nil
+		fileStatusStruct.Status = types.Removed
+		return fileStatusStruct, nil
 	}
 	if !isInIndex && !isInObject {
-		return Untracked, nil
+		fileStatusStruct.Status = types.Untracked
+		return fileStatusStruct, nil
 	}
-	return Unknown, nil
+	return fileStatusStruct, nil
 }

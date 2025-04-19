@@ -5,12 +5,11 @@ package cmd
 
 import (
 	"fmt"
-	"sort"
-
-	"github.com/spf13/cobra"
 
 	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
 	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
+	"github.com/spf13/cobra"
 )
 
 // statusCmd represents the status command
@@ -33,39 +32,42 @@ to quickly create a Cobra application.`,
 
 		files, err := paths.GetAllFiles(".")
 		if err != nil {
-			cmd.Println("Error getting files:", err)
+			fmt.Println("Error getting files:", err)
 			return
 		}
 
-		var fileStatuses map[string]uint8 = make(map[string]uint8)
+		if len(files) == 0 {
+			fmt.Println("No files found in current directory")
+			return
+		}
+
+		var groupedFiles map[types.FileStatus][]string = make(map[types.FileStatus][]string)
 		for _, file := range files {
-			intStatuses, err := utils.GetFileStatus(file)
+			fileStatusStruct, err := utils.GetFileStatus(file)
 			if err != nil {
-				cmd.Println("Error getting file status:", err)
+				fmt.Println("Error getting file status:", err)
+				return
+			}
+			groupedFiles[fileStatusStruct.Status] = append(groupedFiles[fileStatusStruct.Status], file)
+		}
+
+		fmt.Printf("All files taken in account:\n")
+		fmt.Printf("\t (use 'own-git add <file>' to include in what will be committed)\n")
+		fmt.Printf("\t (use 'own-git restore <file>' to discard changes in working directory)\n")
+		fmt.Printf("\t One all files are good to go, use 'own-git commit' to commit them\n\n")
+
+		for status, files := range groupedFiles {
+			strStatus, color := utils.GetFileStatusString(status)
+			if len(files) == 0 {
 				continue
 			}
-			fileStatuses[file] = intStatuses
-		}
-
-		// Collect file paths
-		filePaths := make([]string, 0, len(fileStatuses))
-		for file := range fileStatuses {
-			filePaths = append(filePaths, file)
-		}
-
-		// Sort file paths by their associated status (uint8)
-		sort.Slice(filePaths, func(i, j int) bool {
-			return fileStatuses[filePaths[i]] < fileStatuses[filePaths[j]]
-		})
-
-		fmt.Printf("Files getting gited:\n\n")
-		for _, file := range filePaths {
-			status := fileStatuses[file]
-			strStatus, color := utils.GetFileStatusString(status)
-			if noColor {
-				fmt.Printf("%s: %s\n", file, strStatus)
-			} else {
-				fmt.Printf("%s %s: %s %s\n", color, strStatus, file, utils.NoColor)
+			fmt.Printf("[%s]\n\n", strStatus)
+			for _, file := range files {
+				if noColor {
+					fmt.Printf("%s: %s\n", strStatus, file)
+				} else {
+					fmt.Printf("%s %s: %s %s\n", color, strStatus, file, types.NoColor)
+				}
 			}
 		}
 	},
