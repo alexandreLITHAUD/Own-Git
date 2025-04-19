@@ -1,4 +1,4 @@
-name: Create Release for Own-Git for pushed tag
+name: 🛳️ Create Release for Own-Git for pushed tag
 
 on:
     push:
