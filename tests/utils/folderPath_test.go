@@ -1,10 +1,11 @@
 package tests
 
 import (
-	"own/internal/paths"
-	"own/internal/utils"
 	"path/filepath"
 	"testing"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 )
 
 func TestGetOwnGitFolderPath(t *testing.T) {

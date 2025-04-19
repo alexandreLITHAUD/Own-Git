@@ -3,8 +3,9 @@ package utils
 import (
 	"fmt"
 	"os"
-	"own/internal/paths"
 	"path/filepath"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
 )
 
 func IsOwnFolder() bool {

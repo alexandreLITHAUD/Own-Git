@@ -1,8 +1,9 @@
 package tests
 
 import (
-	"own/internal/types"
 	"testing"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
 )
 
 func TestCreateIndexEntry(t *testing.T) {

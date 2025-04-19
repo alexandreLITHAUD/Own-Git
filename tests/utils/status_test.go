@@ -3,11 +3,12 @@ package tests
 import (
 	"encoding/json"
 	"os"
-	"own/internal/paths"
-	"own/internal/types"
-	"own/internal/utils"
 	"path/filepath"
 	"testing"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 )
 
 func TestGetFileStatusString(t *testing.T) {

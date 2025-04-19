@@ -1,9 +1,10 @@
 package tests
 
 import (
-	"own/internal/paths"
-	"own/internal/utils"
 	"testing"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 )
 
 func BenchmarkCreateOwnFolder(b *testing.B) {

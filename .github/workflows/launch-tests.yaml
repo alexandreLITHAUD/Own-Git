@@ -102,6 +102,13 @@ jobs:
                 cat artifacts/benchmarks.txt >> $GITHUB_STEP_SUMMARY
                 echo '```' >> $GITHUB_STEP_SUMMARY
 
+
+            - name: Run Security Checks
+              continue-on-error: true
+              uses: securego/gosec@master
+              with:
+                args: ./...
+
             - name: Show Unit Test Report
               uses: dorny/test-reporter@v2
               if: success() || failure()  

@@ -6,7 +6,8 @@ package cmd
 import (
 	"fmt"
 	"os"
-	"own/internal/utils"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 
 	"github.com/spf13/cobra"
 )

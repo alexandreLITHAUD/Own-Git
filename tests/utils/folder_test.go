@@ -5,8 +5,8 @@ import (
 	"path/filepath"
 	"testing"
 
-	"own/internal/paths"
-	"own/internal/utils"
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 )
 
 func TestIsOwnFolder(t *testing.T) {

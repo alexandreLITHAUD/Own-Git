@@ -42,7 +42,7 @@ jobs:
                     for arch in $ARCH_TYPE; do
                         echo "Building for OS: $os, ARCH: $arch"
                         GOOS=$os GOARCH=$arch go build \
-                          -ldflags="-s -w -X own/cmd.Version=${{ env.VERSION }}" \
+                          -ldflags="-s -w -X github.com/alexandreLITHAUD/Own-Git/cmd.Version=${{ env.VERSION }}" \
                           -trimpath \
                           -tags=netgo,osusergo \
                           -o own-git-${{ env.VERSION }}-$os-$arch .

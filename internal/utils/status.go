@@ -4,8 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"own/internal/paths"
-	"own/internal/types"
+
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
 )
 
 const (

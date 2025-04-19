@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"os"
 
-	"own/internal/paths"
-	"own/internal/types"
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
 )
 
 // TODO Find an efficent way to write only the needed entries instead of the whole index

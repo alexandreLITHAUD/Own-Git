@@ -5,9 +5,9 @@ import (
 	"sort"
 	"testing"
 
-	"own/internal/paths"
-	"own/internal/types"
-	"own/internal/utils"
+	"github.com/alexandreLITHAUD/Own-Git/internal/paths"
+	"github.com/alexandreLITHAUD/Own-Git/internal/types"
+	"github.com/alexandreLITHAUD/Own-Git/internal/utils"
 )
 
 func TestIsIndex(t *testing.T) {

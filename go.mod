@@ -1,4 +1,4 @@
-module own
+module github.com/alexandreLITHAUD/Own-Git
 
 go 1.24.1
 
