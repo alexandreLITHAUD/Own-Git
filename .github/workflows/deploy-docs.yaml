@@ -35,15 +35,15 @@ jobs:
 
         - name: Generate CLI docs
           run: |
-            go run generate-docs.go
+            go run -tags=generateDocs generateDocs.go
       
         - name: Build Docusaurus site
           run: |
-            cd docusaurus
+            cd ./docs
             npm run build
   
         - name: Deploy versioned docs to GitHub Pages
           uses: peaceiris/actions-gh-pages@v3
           with:
             github_token: ${{ secrets.GITHUB_TOKEN }}
-            publish_dir: ./public
+            publish_dir: ./docs/build
