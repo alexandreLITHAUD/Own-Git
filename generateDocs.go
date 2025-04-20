@@ -11,7 +11,7 @@ import (
 )
 
 func main() {
-	err := doc.GenMarkdownTree(cmd.RootCmd, filepath.Join("docs", "content"))
+	err := doc.GenMarkdownTree(cmd.RootCmd, filepath.Join("docs", "docs", "cli-commands"))
 	if err != nil {
 		log.Fatalf("failed to generate docs: %v", err)
 	}

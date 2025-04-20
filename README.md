@@ -65,7 +65,7 @@ own help
 
 ## 📄 Documentation
 
-The documentation is automatically generated with [Hugo](https://gohugo.io) and hosted on GitHub Pages:
+The documentation is automatically generated with [Docusaurus](https://docusaurus.io) and hosted on GitHub Pages:
 
 🌐 [https://alexandrelithaud.github.io/Own-Git](https://alexandrelithaud.github.io/Own-Git)
 
