@@ -18,11 +18,11 @@ func BenchmarkGetAllFiles(b *testing.B) {
 		_ = os.MkdirAll(dir, 0755)
 		for j := 0; j < 10; j++ {
 			file := filepath.Join(dir, "file"+string(rune('a'+(j%26)))+".txt")
-			os.WriteFile(file, []byte("benchmark content"), 0644)
+			_ = os.WriteFile(file, []byte("benchmark content"), 0644)
 		}
 	}
 	_ = os.MkdirAll(filepath.Join(tempDir, ".git"), 0755)
-	os.WriteFile(filepath.Join(tempDir, ".own-git", "shouldNotAppear.txt"), []byte("skip me"), 0644)
+	_ = os.WriteFile(filepath.Join(tempDir, ".own-git", "shouldNotAppear.txt"), []byte("skip me"), 0644)
 
 	b.ResetTimer()
 	for i := 0; i < b.N; i++ {

@@ -69,9 +69,9 @@ func GetObjectFile(hash string) (types.WorktreeEntry, error) {
 // TODO DEAL WITH IGNORED AND CONFLICTED IN THE FUTURE
 func GetFileStatus(path string) (types.FileStatusStruct, error) {
 
-	var isInIndex bool = false
-	var isInObject bool = true
-	var fileStatusStruct types.FileStatusStruct = types.FileStatusStruct{
+	isInIndex := false
+	isInObject := true
+	fileStatusStruct := types.FileStatusStruct{
 		Path:   path,
 		Status: types.Unknown,
 	}

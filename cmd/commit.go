@@ -18,7 +18,7 @@ var commitAuthor string
 var commitDate string
 
 // TODO
-var commitBranch string
+// var commitBranch string
 
 // commitCmd represents the commit command
 var commitCmd = &cobra.Command{

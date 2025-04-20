@@ -31,10 +31,10 @@ func TestGetAllFiles(t *testing.T) {
 	file3 := filepath.Join(nestedDir, "file3.txt")
 	skipFile := filepath.Join(skipDir, "skip.txt")
 
-	os.WriteFile(file1, []byte("file1"), 0644)
-	os.WriteFile(file2, []byte("file2"), 0644)
-	os.WriteFile(file3, []byte("file3"), 0644)
-	os.WriteFile(skipFile, []byte("skip"), 0644)
+	_ = os.WriteFile(file1, []byte("file1"), 0644)
+	_ = os.WriteFile(file2, []byte("file2"), 0644)
+	_ = os.WriteFile(file3, []byte("file3"), 0644)
+	_ = os.WriteFile(skipFile, []byte("skip"), 0644)
 
 	files, err := paths.GetAllFiles(tempDir)
 	if err != nil {
