@@ -29,8 +29,9 @@ jobs:
 
         - name: Install dependencies
           run: |
-            cd docusaurus
+            cd ./docs
             npm ci
+            cd ..
 
         - name: Generate CLI docs
           run: |
