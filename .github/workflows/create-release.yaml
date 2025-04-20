@@ -1,4 +1,4 @@
-name: 🛳️ Create Release for Own-Git for pushed tag
+name: 🛳️ Create Release and Deploy Doc for Own-Git for pushed tag
 
 on:
     push:
@@ -8,6 +8,8 @@ on:
 jobs:
     build-and-release:
         runs-on: ubuntu-latest
+        outputs:
+            version: ${{ steps.parse_version.outputs.VERSION }}
         permissions:
             contents: write  # This allows creating releases
         steps:
@@ -28,9 +30,10 @@ jobs:
 
             # Parse the version from the tag
             - name: Parse Version
+              id: parse_version
               run: |
                 # Extract version from the TAG
-                echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_ENV
+                echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
 
             - name: Create Own-Git executables
               run: |
@@ -42,13 +45,13 @@ jobs:
                     for arch in $ARCH_TYPE; do
                         echo "Building for OS: $os, ARCH: $arch"
                         GOOS=$os GOARCH=$arch go build \
-                          -ldflags="-s -w -X github.com/alexandreLITHAUD/Own-Git/cmd.Version=${{ env.VERSION }}" \
+                          -ldflags="-s -w -X github.com/alexandreLITHAUD/Own-Git/cmd.Version=${{ steps.parse_version.outputs.VERSION }}" \
                           -trimpath \
                           -tags=netgo,osusergo \
-                          -o own-git-${{ env.VERSION }}-$os-$arch .
-                        chmod +x own-git-${{ env.VERSION }}-$os-$arch
+                          -o own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch .
+                        chmod +x own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch
                         # Create a .tar.gz archive
-                        tar -czf executables/own-git-${{ env.VERSION }}-$os-$arch.tar.gz own-git-${{ env.VERSION }}-$os-$arch
+                        tar -czf executables/own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch.tar.gz own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch
                     done
                 done
                 
@@ -57,3 +60,10 @@ jobs:
               uses: softprops/action-gh-release@v2
               with:
                 files: executables/own-git*
+
+    build-and-deploy-doc:
+      needs: build-and-release
+      uses: ./.github/workflows/deploy-docs.yaml
+      with:
+        version: ${{ needs.build-and-release.outputs.version }}
+      secrets: inherit
