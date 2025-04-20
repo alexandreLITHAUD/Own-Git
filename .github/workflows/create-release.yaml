@@ -67,3 +67,7 @@ jobs:
       with:
         version: ${{ needs.build-and-release.outputs.version }}
       secrets: inherit
+      permissions:
+        contents: write
+        pages: write
+        id-token: write
