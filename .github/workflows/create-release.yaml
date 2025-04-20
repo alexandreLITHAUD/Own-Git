@@ -6,10 +6,21 @@ on:
             - 'v*'
 
 jobs:
-    build-and-release:
+    prepare-release:
         runs-on: ubuntu-latest
         outputs:
             version: ${{ steps.parse_version.outputs.VERSION }}
+        steps:
+            # Parse the version from the tag
+            - name: Parse Version
+              id: parse_version
+              run: |
+                # Extract version from the TAG
+                echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
+  
+    build-and-deploy-release:
+        runs-on: ubuntu-latest
+        needs: prepare-release
         permissions:
             contents: write  # This allows creating releases
         steps:
@@ -28,13 +39,6 @@ jobs:
             - name: Create executable Folder
               run: mkdir -p executables
 
-            # Parse the version from the tag
-            - name: Parse Version
-              id: parse_version
-              run: |
-                # Extract version from the TAG
-                echo "VERSION=${GITHUB_REF#refs/tags/v}" >> $GITHUB_OUTPUT
-
             - name: Create Own-Git executables
               run: |
                 OSS_TYPE="${{ vars.GO_DEPLOY_OSS }}"
@@ -45,13 +49,13 @@ jobs:
                     for arch in $ARCH_TYPE; do
                         echo "Building for OS: $os, ARCH: $arch"
                         GOOS=$os GOARCH=$arch go build \
-                          -ldflags="-s -w -X github.com/alexandreLITHAUD/Own-Git/cmd.Version=${{ steps.parse_version.outputs.VERSION }}" \
+                          -ldflags="-s -w -X github.com/alexandreLITHAUD/Own-Git/cmd.Version=${{ needs.prepare-release.outputs.version }}" \
                           -trimpath \
                           -tags=netgo,osusergo \
-                          -o own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch .
-                        chmod +x own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch
+                          -o own-git-${{ needs.prepare-release.outputs.version }}-$os-$arch .
+                        chmod +x own-git-${{ needs.prepare-release.outputs.version }}-$os-$arch
                         # Create a .tar.gz archive
-                        tar -czf executables/own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch.tar.gz own-git-${{ steps.parse_version.outputs.VERSION }}-$os-$arch
+                        tar -czf executables/own-git-${{ needs.prepare-release.outputs.version }}-$os-$arch.tar.gz own-git-${{ needs.prepare-release.outputs.version }}-$os-$arch
                     done
                 done
                 
@@ -62,10 +66,7 @@ jobs:
                 files: executables/own-git*
 
     build-and-deploy-doc:
-      needs: build-and-release
       uses: ./.github/workflows/deploy-docs.yaml
-      with:
-        version: ${{ needs.build-and-release.outputs.version }}
       secrets: inherit
       permissions:
         contents: write
