@@ -1,0 +1,46 @@
+name: 📄 Deploy Documentation
+
+on:
+    release:
+      types: [published]
+  
+jobs:
+    build-and-deploy:
+      runs-on: ubuntu-latest
+  
+      steps:
+        - name: Checkout code
+          uses: actions/checkout@v4
+          with:
+            fetch-depth: 0
+            submodules: true
+  
+        - name: Set up Go
+          uses: actions/setup-go@v5
+          with:
+            go-version: 1.22
+  
+        - name: Set up Hugo
+          uses: peaceiris/actions-hugo@v2
+          with:
+            hugo-version: '0.146.5'
+  
+        - name: Run doc generator
+          run: go run -tags=generateDocs generateDocs.go
+  
+        - name: Build Hugo site
+          run: hugo -s ./docs -d ../public
+  
+        - name: Deploy versioned docs to GitHub Pages
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./public
+            destination_dir: ${{ github.event.release.tag_name }}
+  
+        - name: Also deploy to /latest
+          uses: peaceiris/actions-gh-pages@v3
+          with:
+            github_token: ${{ secrets.GITHUB_TOKEN }}
+            publish_dir: ./public
+            destination_dir: latest
