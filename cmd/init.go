@@ -28,7 +28,12 @@ The default value is "main".`,
 				fmt.Printf("Config file: %s\n", Config)
 			}
 		}
-		utils.CreateOwnFolder(branch, Config)
+		err := utils.CreateOwnFolder(branch, Config)
+		if err != nil {
+			fmt.Printf("Error creating own-git folder: %v\n", err)
+			return
+		}
+		fmt.Printf("own-git folder created with initial branch: %s\n", branch)
 	},
 }
 

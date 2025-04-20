@@ -32,7 +32,11 @@ func GetFileSHA1(filepath string) (string, error) {
 	if err != nil {
 		return "", fmt.Errorf("error opening file: %w", err)
 	}
-	defer file.Close()
+	defer func() {
+		if err := file.Close(); err != nil {
+			fmt.Printf("error closing file: %v\n", err)
+		}
+	}()
 
 	// Create new SHA1 hash
 	hash := sha1.New()

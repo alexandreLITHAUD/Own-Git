@@ -41,7 +41,7 @@ to quickly create a Cobra application.`,
 			return
 		}
 
-		var groupedFiles map[types.FileStatus][]string = make(map[types.FileStatus][]string)
+		groupedFiles := make(map[types.FileStatus][]string)
 		for _, file := range files {
 			fileStatusStruct, err := utils.GetFileStatus(file)
 			if err != nil {

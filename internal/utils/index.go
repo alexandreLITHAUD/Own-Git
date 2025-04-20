@@ -186,7 +186,7 @@ func RemoveEntryFromIndex(path string) error {
 // occurs while computing the SHA1, the function returns an error.
 func FilePathtoIndexEntry(path string) (types.IndexEntry, error) {
 
-	var mode string = "100644"
+	mode := "100644"
 
 	isexec, err := IsExecutable(path)
 	// CHECK ERROR ??

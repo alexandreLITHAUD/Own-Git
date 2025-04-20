@@ -27,7 +27,11 @@ If you know how the git cli works, you will understand how this tool works.
 It is not meant to be a replacement for git, but rather a learning tool.`,
 	Run: func(cmd *cobra.Command, args []string) {
 
-		cmd.Help()
+		err := cmd.Help()
+		if err != nil {
+			fmt.Printf("Error displaying help: %v\n", err)
+			os.Exit(1)
+		}
 
 		if Config != "" {
 			fmt.Printf("Config file: %s\n", Config)

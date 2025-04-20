@@ -9,7 +9,7 @@ import (
 )
 
 func IsOwnFolder() bool {
-	var path string = paths.GetOwnGitFolderPath()
+	path := paths.GetOwnGitFolderPath()
 
 	if _, err := os.Stat(path); os.IsNotExist(err) {
 		return false
@@ -41,7 +41,7 @@ func CreateOwnFolder(initialBranchName string, configFile string) error {
 		return fmt.Errorf("error creating refs folder: %v", err)
 	}
 
-	var configBytes []byte = []byte("")
+	configBytes := []byte("")
 
 	if configFile != "" {
 		if valid := IsConfFileValid(configFile); !valid {
@@ -54,9 +54,18 @@ func CreateOwnFolder(initialBranchName string, configFile string) error {
 		}
 	}
 
-	os.WriteFile(filepath.Join(path, "HEAD"), []byte("ref: refs/heads/"+initialBranchName+"\n"), os.ModePerm)
-	os.WriteFile(filepath.Join(path, "config"), configBytes, os.ModePerm)
-	os.WriteFile(filepath.Join(path, "index"), []byte(""), os.ModePerm)
+	err = os.WriteFile(filepath.Join(path, "HEAD"), []byte("ref: refs/heads/"+initialBranchName+"\n"), os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("error creating HEAD file: %v", err)
+	}
+	err = os.WriteFile(filepath.Join(path, "config"), configBytes, os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("error creating config file: %v", err)
+	}
+	err = os.WriteFile(filepath.Join(path, "index"), []byte(""), os.ModePerm)
+	if err != nil {
+		return fmt.Errorf("error creating index file: %v", err)
+	}
 
 	return nil
 }
