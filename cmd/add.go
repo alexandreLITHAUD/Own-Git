@@ -28,7 +28,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(addCmd)
+	RootCmd.AddCommand(addCmd)
 
 	addCmd.Flags().StringP("file", "f", "", "File to add to the repository")
 	addCmd.Flags().BoolP("all", "a", false, "Add all files to the repository")
