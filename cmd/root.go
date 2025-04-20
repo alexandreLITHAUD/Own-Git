@@ -16,7 +16,7 @@ var Verbose bool
 var Config string
 
 // rootCmd represents the base command when called without any subcommands
-var rootCmd = &cobra.Command{
+var RootCmd = &cobra.Command{
 	Use:   "own",
 	Short: "own-git a simple git copycat using go functionalities",
 	Long: `Own Git is a simple copycat of git functionalities using go.
@@ -58,7 +58,7 @@ It is not meant to be a replacement for git, but rather a learning tool.`,
 }
 
 func Execute() {
-	err := rootCmd.Execute()
+	err := RootCmd.Execute()
 	if err != nil {
 		os.Exit(1)
 	}
@@ -66,6 +66,6 @@ func Execute() {
 
 func init() {
 	// rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
-	rootCmd.PersistentFlags().StringVarP(&Config, "config", "c", "", "Path to the config file")
-	rootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose mode")
+	RootCmd.PersistentFlags().StringVarP(&Config, "config", "c", "", "Path to the config file")
+	RootCmd.PersistentFlags().BoolVarP(&Verbose, "verbose", "v", false, "Verbose mode")
 }

@@ -100,3 +100,6 @@ Temporary Items
 **/.own
 **/.own-git
 **/.own-git/*
+
+# Hugo Doc
+public

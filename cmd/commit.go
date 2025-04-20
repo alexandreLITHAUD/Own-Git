@@ -50,7 +50,7 @@ The default value is "Commit".`,
 }
 
 func init() {
-	rootCmd.AddCommand(commitCmd)
+	RootCmd.AddCommand(commitCmd)
 
 	commitCmd.Flags().StringVarP(&commitMessage, "message", "m", "Commit", "Commit message")
 	commitCmd.Flags().StringVarP(&commitAuthor, "author", "a", os.Getenv("USER"), "Author of the commit")

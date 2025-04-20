@@ -38,6 +38,6 @@ The default value is "main".`,
 }
 
 func init() {
-	rootCmd.AddCommand(initCmd)
+	RootCmd.AddCommand(initCmd)
 	initCmd.Flags().StringP("initial-branch", "b", "main", "Name of the initial branch")
 }

@@ -74,7 +74,7 @@ to quickly create a Cobra application.`,
 }
 
 func init() {
-	rootCmd.AddCommand(statusCmd)
+	RootCmd.AddCommand(statusCmd)
 
 	statusCmd.Flags().BoolP("no-color", "n", false, "Disable color output")
 }
