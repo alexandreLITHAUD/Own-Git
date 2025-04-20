@@ -1,0 +1,4 @@
+baseURL = "https://alexandrelithaud.github.io/Own-Git/"
+languageCode = "en-us"
+title = "Own-Git Documentation"
+theme = "ananke"
