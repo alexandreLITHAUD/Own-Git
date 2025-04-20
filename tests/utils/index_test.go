@@ -57,7 +57,10 @@ func TestIsIndexEmpty(t *testing.T) {
 		t.Errorf("Expected IsIndexEmpty to return true when index is empty")
 	}
 
-	os.WriteFile(paths.GetIndexFilePath(), []byte("test"), os.ModePerm)
+	err = os.WriteFile(paths.GetIndexFilePath(), []byte("test"), os.ModePerm)
+	if err != nil {
+		t.Fatalf("Failed to write index file: %v", err)
+	}
 	isEmpty, err = utils.IsIndexEmpty()
 
 	if err != nil {
